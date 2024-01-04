@@ -8,17 +8,28 @@ def pascal_triangle(n):
     """
     Returns a list of integers
     representing the Pascal Triangle of n
-    returns empty list if n <= 0
+    returns an empty list if n <= 0
     """
-    k = []
+    result = []
     if n <= 0:
-        return k
-    k = [[1]]
-    for i in range(1, n):
+        return result
+    
+    # Initialize with the first row
+    result = [[1]]
+    
+    # Loop to generate the Pascal Triangle
+    i = 1
+    while i < n:
         temp = [1]
-        for j in range(len(k[i - 1]) - 1):
-            curr = k[i - 1]
-            temp.append(k[i - 1][j] + k[i - 1][j + 1])
+        j = 0
+        while j < len(result[i - 1]) - 1:
+            # Access the previous row
+            curr = result[i - 1]
+            temp.append(result[i - 1][j] + result[i - 1][j + 1])
+            j += 1
         temp.append(1)
-        k.append(temp)
-    return k
+        result.append(temp)
+        i += 1
+
+    return result
+
