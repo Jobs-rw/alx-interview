@@ -21,12 +21,8 @@ def pascal_triangle(n):
     i = 1
     while i < n:
         temp = [1]
-        j = 0
-        while j < len(result[i - 1]) - 1:
-            # Access the previous row
-            curr = result[i - 1]
+        for j in range(len(result[i - 1]) - 1):
             temp.append(result[i - 1][j] + result[i - 1][j + 1])
-            j += 1
         temp.append(1)
         result.append(temp)
         i += 1
