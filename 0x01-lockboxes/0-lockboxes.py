@@ -1,18 +1,26 @@
 #!/usr/bin/python3
 def canUnlockAll(boxes):
-    """ Set to keep track of opened boxes"""
-    opened_boxes = set()
-    opened_boxes.add(0)
-    queue = [0]
+    """
+    Function that checks with a boolean value if the list type and
+    length to invoke two while loops, one to traverse the list
+    and the other to compare if key is idx or not in order to open
+    """
+    if type(boxes) is not list:
+        return False
+    elif (len(boxes)) == 0:
+        return False
+    
+    k = 1
+    while k < len(boxes) - 1:
+        idx = 0
+        boxes_checked = False
+        while idx < len(boxes):
+            boxes_checked = k in boxes[idx] and k != idx
+            if boxes_checked:
+                break
+            idx += 1
+        if boxes_checked is False:
+            return boxes_checked
+        k += 1
 
-    while queue:
-        current_box = queue.pop(0)
-
-        # Check keys in the current box
-        for key in boxes[current_box]:
-            if key not in opened_boxes:
-                opened_boxes.add(key)
-                queue.append(key)
-
-    # If all boxes have been opened, return True
-    return len(opened_boxes) == len(boxes)
+    return True
