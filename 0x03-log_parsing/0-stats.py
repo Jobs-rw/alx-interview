@@ -1,50 +1,48 @@
-#!/usr/bin/python3
-"""
-log parsing
-"""
+#!/bin/bash
 
-import sys
-import re
+total_size=0
+declare -A status_codes
 
+print_metrics() {
+    echo "Total file size: $total_size"
+    for code in $(echo "${!status_codes[@]}" | tr ' ' '\n' | sort -n); do
+        echo "$code: ${status_codes[$code]}"
+    done
+}
 
-def output(log: dict) -> None:
-    """
-    helper function to display stats
-    """
-    print("File size: {}".format(log["file_size"]))
-    for code in sorted(log["code_frequency"]):
-        if log["code_frequency"][code]:
-            print("{}: {}".format(code, log["code_frequency"][code]))
+process_line() {
+    line=$1
+    parts=($line)
 
+    if [ "${#parts[@]}" -lt 9 ]; then
+        return
+    fi
 
-if __name__ == "__main__":
-    regex = re.compile(
-    r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d+\] "GET /projects/260 HTTP/1.1" (.{3}) (\d+)')  # nopep8
+    ip_address=${parts[0]}
+    date=${parts[3]:1}
+    status_code=${parts[${#parts[@]}-2]}
+    file_size=${parts[${#parts[@]}-1]}
 
-    line_count = 0
-    log = {}
-    log["file_size"] = 0
-    log["code_frequency"] = {
-        str(code): 0 for code in [
-            200, 301, 400, 401, 403, 404, 405, 500]}
+    # Update total file size
+    total_size=$((total_size + file_size))
 
-    try:
-        for line in sys.stdin:
-            line = line.strip()
-            match = regex.fullmatch(line)
-            if (match):
-                line_count += 1
-                code = match.group(1)
-                file_size = int(match.group(2))
+    # Update status code count
+    if [[ $status_code =~ ^[0-9]+$ ]]; then
+        ((status_codes[$status_code]++))
+    fi
+}
 
-                # File size
-                log["file_size"] += file_size
+lines_processed=0
 
-                # status code
-                if (code.isdecimal()):
-                    log["code_frequency"][code] += 1
+trap 'print_metrics' SIGINT
 
-                if (line_count % 10 == 0):
-                    output(log)
-    finally:
-        output(log)
+while read -r line; do
+    process_line "$line"
+    lines_processed=$((lines_processed + 1))
+
+    if [ $((lines_processed % 10)) -eq 0 ]; then
+        print_metrics
+    fi
+done
+
+print_metrics
