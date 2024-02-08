@@ -1,59 +1,38 @@
 #!/usr/bin/python3
 """
-Solution to the nqueens problem
+Solution to the nqueens proble
 """
 import sys
 
 
-def backtrack(n, board):
+def backtrack(r, n, cols, pos, neg, board):
     """
-    Backtrack function to find solutions
+    backtrack function to find solution
     """
-    r = 0
-    cols = set()
-    pos_diag = set()
-    neg_diag = set()
+    if r == n:
+        res = []
+        for l in range(len(board)):
+            for k in range(len(board[l])):
+                if board[l][k] == 1:
+                    res.append([l, k])
+        print(res)
+        return
 
-    while r < n:
-        c = 0
-        while c < n:
-            if c in cols or (r + c) in pos_diag or (r - c) in neg_diag:
-                c += 1
-                continue
+    for c in range(n):
+        if c in cols or (r + c) in pos or (r - c) in neg:
+            continue
 
-            cols.add(c)
-            pos_diag.add(r + c)
-            neg_diag.add(r - c)
-            board[r][c] = 1
+        cols.add(c)
+        pos.add(r + c)
+        neg.add(r - c)
+        board[r][c] = 1
 
-            if r == n - 1:
-                res = []
-                for l in range(len(board)):
-                    for k in range(len(board[l])):
-                        if board[l][k] == 1:
-                            res.append([l, k])
-                print(res)
-                
-                cols.remove(c)
-                pos_diag.remove(r + c)
-                neg_diag.remove(r - c)
-                board[r][c] = 0
-                c += 1
-            else:
-                r += 1
-                break
+        backtrack(r+1, n, cols, pos, neg, board)
 
-        if c == n:
-            if r == 0:
-                break
-            else:
-                r -= 1
-                last_queen_col = board[r].index(1)
-                cols.remove(last_queen_col)
-                pos_diag.remove(r + last_queen_col)
-                neg_diag.remove(r - last_queen_col)
-                board[r][last_queen_col] = 0
-                c = last_queen_col + 1
+        cols.remove(c)
+        pos.remove(r + c)
+        neg.remove(r - c)
+        board[r][c] = 0
 
 
 def nqueens(n):
@@ -65,8 +44,12 @@ def nqueens(n):
         List of lists representing coordinates of each
         queen for all possible solutions
     """
-    board = [[0] * n for _ in range(n)]
-    backtrack(n, board)
+    cols = set()
+    pos_diag = set()
+    neg_diag = set()
+    board = [[0] * n for i in range(n)]
+
+    backtrack(0, n, cols, pos_diag, neg_diag, board)
 
 
 if __name__ == "__main__":
