@@ -1,4 +1,6 @@
-t request = require('request');
+#!/usr/bin/node
+
+const request = require('request');
 
 const req = (arr, i) => {
   if (i === arr.length) return;
