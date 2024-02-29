@@ -6,7 +6,10 @@ Change comes from within
 
 def makeChange(coins, total):
     """
-    Returns the fewest number of coins needed to meet a given amount total.
+    ********************************************
+    ****determine the fewest number of coins****
+    *******needed to meet a given amount********
+    ********************************************
     @coins: is a list of the values of the coins
             in the possession
     @total: given amount
