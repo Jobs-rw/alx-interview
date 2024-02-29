@@ -1,32 +1,28 @@
 #!/usr/bin/python3
+"""
+Change comes from within
+"""
+
 
 def makeChange(coins, total):
     """
     Returns the fewest number of coins needed to meet a given amount total.
     """
-    # If total is 0 or less, return 0
+    if (type(total) is not int or type(coins) is not list):
+        return -1
     if total <= 0:
         return 0
+    try:
+        Min = [float('inf') for i in range(total+1)]
+        Min[0] = 0
+        for i in range(1, total+1):
+            for j in range(len(coins)):
+                if Min[i - coins[j]] + 1 < Min[i]:
+                    Min[i] = Min[i - coins[j]] + 1
 
-    # Initialize an array to store the fewest number of coins needed for each amount
-    dp = [float('inf')] * (total + 1)
-    dp[0] = 0
-
-    # Iterate through each coin value
-    for coin in coins:
-        # Update dp[i] if using the current coin results in fewer coins needed
-        for i in range(coin, total + 1):
-            dp[i] = min(dp[i], dp[i - coin] + 1)
-
-    # If dp[total] is still infinity, total cannot be met by any number of coins
-    if dp[total] == float('inf'):
+        if Min[total] != float('inf'):
+            return Min[total]
+        else:
+            return -1
+    except Exception:
         return -1
-    else:
-        return dp[total]
-
-
-if __name__ == "__main__":
-    # Test cases
-    print(makeChange([1, 2, 25], 37))  # Output: 7
-    print(makeChange([1256, 54, 48, 16, 102], 1453))  # Output: -1
-
