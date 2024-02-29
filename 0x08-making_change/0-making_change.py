@@ -3,11 +3,15 @@
 
 
 def makeChange(coins, total):
-    """ Generate changes needed to reach total
-
-    Args:
-        coins ([List]): [List of Coins available]
-        total ([int]): [total amount needed]
+    """  determine the fewest number of coins needed to meet a given amount
+    @coins: is a list of the values of the coins
+            in the possession
+    @total: given amount
+    Return:
+            fewest number of coins needed to meet total
+            *** If total is 0 or less, return 0
+            *** If total cannot be met by any number
+                of coins you have, return -1
     """
     if total <= 0:
         return 0
